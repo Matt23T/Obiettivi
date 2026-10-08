@@ -1,0 +1,1546 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Salvadanai</title>
+
+<style>
+:root{
+    --bg:#f5f5f7;
+    --card:#ffffff;
+    --text:#111111;
+    --muted:#777777;
+    --line:#e5e5e7;
+    --blue:#3478f6;
+    --green:#20a463;
+    --red:#d94b4b;
+    --shadow:0 4px 18px rgba(0,0,0,.07);
+}
+
+*{
+    box-sizing:border-box;
+    -webkit-tap-highlight-color:transparent;
+}
+
+body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",Arial,sans-serif;
+}
+
+.app{
+    width:100%;
+    max-width:720px;
+    margin:auto;
+    padding:18px 14px 100px;
+}
+
+h1{
+    margin:8px 4px 2px;
+    font-size:32px;
+    letter-spacing:-1px;
+}
+
+.subtitle{
+    margin:0 4px 20px;
+    color:var(--muted);
+}
+
+.total-card{
+    background:#111;
+    color:white;
+    border-radius:24px;
+    padding:22px;
+    margin-bottom:16px;
+    box-shadow:var(--shadow);
+}
+
+.total-label{
+    font-size:13px;
+    opacity:.65;
+}
+
+.total-number{
+    font-size:38px;
+    font-weight:700;
+    margin-top:5px;
+    letter-spacing:-1px;
+}
+
+.total-buttons{
+    display:flex;
+    gap:8px;
+    margin-top:17px;
+}
+
+.total-buttons button{
+    flex:1;
+    background:rgba(255,255,255,.12);
+    color:white;
+    box-shadow:none;
+}
+
+button{
+    border:0;
+    border-radius:15px;
+    padding:14px 12px;
+    font-size:15px;
+    font-weight:600;
+    background:white;
+    color:var(--text);
+    box-shadow:var(--shadow);
+    cursor:pointer;
+}
+
+button:active{
+    transform:scale(.98);
+}
+
+.primary{
+    background:var(--blue);
+    color:white;
+}
+
+.danger{
+    color:var(--red);
+    background:#fff0f0;
+}
+
+.toolbar{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-bottom:22px;
+}
+
+.section-title{
+    font-size:19px;
+    font-weight:700;
+    margin:22px 4px 10px;
+}
+
+.pig{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:21px;
+    margin:10px 0;
+    overflow:hidden;
+    box-shadow:var(--shadow);
+}
+
+.pig-head{
+    padding:17px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.icon{
+    width:47px;
+    height:47px;
+    flex:none;
+    border-radius:15px;
+    background:#f1f1f3;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:24px;
+}
+
+.info{
+    flex:1;
+    min-width:0;
+}
+
+.title{
+    font-size:17px;
+    font-weight:700;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+}
+
+.path{
+    font-size:12px;
+    color:var(--muted);
+    margin-top:4px;
+}
+
+.amount{
+    font-size:17px;
+    font-weight:700;
+    text-align:right;
+    white-space:nowrap;
+}
+
+.progress{
+    height:7px;
+    background:#eeeeee;
+    margin:0 17px 14px;
+    border-radius:10px;
+    overflow:hidden;
+}
+
+.progress-fill{
+    height:100%;
+    background:var(--green);
+    width:0%;
+    border-radius:10px;
+}
+
+.actions{
+    display:flex;
+    border-top:1px solid var(--line);
+}
+
+.actions button{
+    flex:1;
+    border-radius:0;
+    background:white;
+    box-shadow:none;
+    padding:12px 3px;
+    font-size:12px;
+}
+
+.children{
+    padding:0 12px 12px 27px;
+}
+
+.child-line{
+    border-left:2px solid #ddd;
+    padding:8px 0 8px 12px;
+}
+
+.empty{
+    padding:34px 20px;
+    text-align:center;
+    color:var(--muted);
+    background:white;
+    border-radius:20px;
+    border:1px dashed #ccc;
+    line-height:1.5;
+}
+
+.transaction{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:13px 2px;
+    border-bottom:1px solid var(--line);
+}
+
+.transaction-info{
+    flex:1;
+}
+
+.transaction-name{
+    font-weight:600;
+    font-size:15px;
+}
+
+.transaction-pig{
+    color:var(--muted);
+    font-size:12px;
+    margin-top:3px;
+}
+
+.transaction-plus{
+    color:var(--green);
+    font-weight:700;
+}
+
+.transaction-minus{
+    color:var(--red);
+    font-weight:700;
+}
+
+.modal-bg{
+    position:fixed;
+    inset:0;
+    z-index:100;
+    background:rgba(0,0,0,.42);
+    display:none;
+    align-items:flex-end;
+    justify-content:center;
+}
+
+.modal{
+    width:100%;
+    max-width:720px;
+    background:white;
+    border-radius:26px 26px 0 0;
+    padding:23px 18px 30px;
+    max-height:92vh;
+    overflow:auto;
+}
+
+.modal h2{
+    margin:0 0 18px;
+    font-size:23px;
+}
+
+label{
+    display:block;
+    color:#666;
+    font-size:13px;
+    margin:13px 0 6px;
+}
+
+input,
+select{
+    width:100%;
+    border:1px solid #ddd;
+    background:#fafafa;
+    border-radius:13px;
+    padding:14px;
+    font-size:16px;
+    outline:none;
+}
+
+input:focus,
+select:focus{
+    border-color:var(--blue);
+}
+
+.row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+}
+
+.modal-actions{
+    display:flex;
+    gap:10px;
+    margin-top:20px;
+}
+
+.modal-actions button{
+    flex:1;
+}
+
+.initial-box{
+    background:#f5f5f7;
+    border-radius:15px;
+    padding:14px;
+    margin-bottom:8px;
+    color:#555;
+    font-size:13px;
+    line-height:1.4;
+}
+
+.setup-text{
+    color:#666;
+    font-size:14px;
+    line-height:1.45;
+    margin-top:-8px;
+    margin-bottom:15px;
+}
+
+@media(min-width:600px){
+    .modal-bg{
+        align-items:center;
+    }
+
+    .modal{
+        border-radius:26px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <h1>Salvadanai</h1>
+    <p class="subtitle">
+        Dai un nome ai tuoi progetti e assegna loro i tuoi soldi.
+    </p>
+
+    <div class="total-card">
+
+        <div class="total-label">
+            Disponibilità totale
+        </div>
+
+        <div class="total-number" id="totalNumber">
+            € 0,00
+        </div>
+
+        <div class="total-buttons">
+            <button onclick="openMovementModal('plus')">
+                ＋ Entrata
+            </button>
+
+            <button onclick="openMovementModal('minus')">
+                − Uscita
+            </button>
+        </div>
+
+    </div>
+
+    <div class="toolbar">
+
+        <button class="primary" onclick="openPigModal()">
+            ＋ Nuovo salvadanaio
+        </button>
+
+        <button onclick="openSetupModal()">
+            ⚙ Impostazioni
+        </button>
+
+    </div>
+
+    <div class="section-title">
+        I miei obiettivi
+    </div>
+
+    <div id="pigList"></div>
+
+    <div class="section-title">
+        Movimenti recenti
+    </div>
+
+    <div id="transactionList"></div>
+
+</div>
+
+
+<!-- MODALE IMPOSTAZIONI INIZIALI -->
+
+<div class="modal-bg" id="setupModal">
+
+    <div class="modal">
+
+        <h2>Disponibilità iniziale</h2>
+
+        <p class="setup-text">
+            Inserisci quanto denaro vuoi considerare come punto di partenza.
+            Questa cifra rappresenta il totale disponibile prima dei movimenti.
+        </p>
+
+        <label>
+            Cifra iniziale
+        </label>
+
+        <input
+            id="initialAmount"
+            type="number"
+            step="0.01"
+            min="0"
+            placeholder="Es. 7000"
+        >
+
+        <div class="modal-actions">
+
+            <button onclick="closeModals()">
+                Annulla
+            </button>
+
+            <button class="primary" onclick="saveInitialAmount()">
+                Salva
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- MODALE NUOVO SALVADANAIO -->
+
+<div class="modal-bg" id="pigModal">
+
+    <div class="modal">
+
+        <h2>Nuovo salvadanaio</h2>
+
+        <label>
+            Titolo
+        </label>
+
+        <input
+            id="pigName"
+            type="text"
+            placeholder="Es. Macchina"
+        >
+
+        <label>
+            Salvadanaio padre
+        </label>
+
+        <select id="pigParent">
+        </select>
+
+        <label>
+            Obiettivo economico
+        </label>
+
+        <input
+            id="pigTarget"
+            type="number"
+            step="0.01"
+            min="0"
+            placeholder="Es. 15000"
+        >
+
+        <label>
+            Icona
+        </label>
+
+        <input
+            id="pigIcon"
+            type="text"
+            maxlength="2"
+            placeholder="🚗"
+        >
+
+        <div class="modal-actions">
+
+            <button onclick="closeModals()">
+                Annulla
+            </button>
+
+            <button class="primary" onclick="savePig()">
+                Crea salvadanaio
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- MODALE MOVIMENTO -->
+
+<div class="modal-bg" id="movementModal">
+
+    <div class="modal">
+
+        <h2 id="movementTitle">
+            Nuovo movimento
+        </h2>
+
+        <label>
+            Importo
+        </label>
+
+        <input
+            id="movementAmount"
+            type="number"
+            step="0.01"
+            min="0"
+            placeholder="Es. 500"
+        >
+
+        <label>
+            Salvadanaio
+        </label>
+
+        <select id="movementPig">
+        </select>
+
+        <label>
+            Descrizione
+        </label>
+
+        <input
+            id="movementDescription"
+            type="text"
+            placeholder="Es. Risparmio mensile"
+        >
+
+        <div class="modal-actions">
+
+            <button onclick="closeModals()">
+                Annulla
+            </button>
+
+            <button class="primary" onclick="saveMovement()">
+                Registra
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   DATI
+========================================================= */
+
+const STORAGE_KEY = "salvadanai_app_v1";
+
+let data = loadData();
+
+let currentMovementType = "plus";
+
+
+/* =========================================================
+   CARICAMENTO / SALVATAGGIO
+========================================================= */
+
+function loadData(){
+
+    const saved = localStorage.getItem(STORAGE_KEY);
+
+    if(saved){
+
+        try{
+            return JSON.parse(saved);
+        }catch(e){}
+    }
+
+    return {
+        initialAmount:0,
+        pigs:[],
+        transactions:[]
+    };
+}
+
+
+function saveData(){
+
+    localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(data)
+    );
+
+    render();
+}
+
+
+/* =========================================================
+   FORMATO EURO
+========================================================= */
+
+function euro(value){
+
+    return new Intl.NumberFormat(
+        "it-IT",
+        {
+            style:"currency",
+            currency:"EUR"
+        }
+    ).format(value || 0);
+
+}
+
+
+/* =========================================================
+   ID
+========================================================= */
+
+function createId(){
+
+    return Date.now().toString(36) +
+           Math.random().toString(36).substring(2);
+
+}
+
+
+/* =========================================================
+   TOTALE DISPONIBILE
+========================================================= */
+
+function getTotal(){
+
+    let total = Number(data.initialAmount) || 0;
+
+    data.transactions.forEach(transaction => {
+
+        if(transaction.type === "plus"){
+            total += Number(transaction.amount);
+        }else{
+            total -= Number(transaction.amount);
+        }
+
+    });
+
+    return total;
+}
+
+
+/* =========================================================
+   GERARCHIA
+========================================================= */
+
+function getChildren(id){
+
+    return data.pigs.filter(
+        pig => pig.parentId === id
+    );
+
+}
+
+
+function getDescendantIds(id){
+
+    let ids = [id];
+
+    let changed = true;
+
+    while(changed){
+
+        changed = false;
+
+        data.pigs.forEach(pig => {
+
+            if(
+                pig.parentId &&
+                ids.includes(pig.parentId) &&
+                !ids.includes(pig.id)
+            ){
+
+                ids.push(pig.id);
+
+                changed = true;
+            }
+
+        });
+
+    }
+
+    return ids;
+}
+
+
+/* =========================================================
+   SOLDI DI UN SALVADANAIO
+========================================================= */
+
+function getPigAmount(id){
+
+    const ids = getDescendantIds(id);
+
+    let total = 0;
+
+    data.transactions.forEach(transaction => {
+
+        if(ids.includes(transaction.pigId)){
+
+            if(transaction.type === "plus"){
+                total += Number(transaction.amount);
+            }else{
+                total -= Number(transaction.amount);
+            }
+
+        }
+
+    });
+
+    return total;
+}
+
+
+/* =========================================================
+   NOME PADRE
+========================================================= */
+
+function getPigName(id){
+
+    const pig = data.pigs.find(
+        item => item.id === id
+    );
+
+    return pig ? pig.name : "Salvadanaio";
+}
+
+
+/* =========================================================
+   PERCENTUALE OBIETTIVO
+========================================================= */
+
+function getProgress(pig){
+
+    if(!pig.target || pig.target <= 0){
+        return 0;
+    }
+
+    const amount = getPigAmount(pig.id);
+
+    return Math.min(
+        100,
+        Math.max(
+            0,
+            amount / pig.target * 100
+        )
+    );
+}
+
+
+/* =========================================================
+   RENDER
+========================================================= */
+
+function render(){
+
+    document.getElementById(
+        "totalNumber"
+    ).textContent = euro(getTotal());
+
+    renderPigs();
+
+    renderTransactions();
+
+    fillSelects();
+
+}
+
+
+/* =========================================================
+   RENDER SALVADANAI
+========================================================= */
+
+function renderPigs(){
+
+    const container =
+        document.getElementById("pigList");
+
+    const roots =
+        data.pigs.filter(
+            pig => !pig.parentId
+        );
+
+    if(roots.length === 0){
+
+        container.innerHTML = `
+            <div class="empty">
+                Non hai ancora creato nessun salvadanaio.<br><br>
+                Crea il primo obiettivo con il pulsante
+                <b>＋ Nuovo salvadanaio</b>.
+            </div>
+        `;
+
+        return;
+    }
+
+    container.innerHTML =
+        roots
+        .map(pig => renderPig(pig,0))
+        .join("");
+
+}
+
+
+/* =========================================================
+   RENDER SINGOLO SALVADANAIO
+========================================================= */
+
+function renderPig(pig,level){
+
+    const amount =
+        getPigAmount(pig.id);
+
+    const progress =
+        getProgress(pig);
+
+    const children =
+        getChildren(pig.id);
+
+    const margin =
+        Math.min(level,3) * 8;
+
+    let html = `
+
+        <div
+            class="pig"
+            style="margin-left:${margin}px"
+        >
+
+            <div class="pig-head">
+
+                <div class="icon">
+                    ${escapeHtml(
+                        pig.icon || "🐷"
+                    )}
+                </div>
+
+                <div class="info">
+
+                    <div class="title">
+                        ${escapeHtml(pig.name)}
+                    </div>
+
+                    <div class="path">
+
+                        ${
+                            pig.target > 0
+                            ?
+                            "Obiettivo " +
+                            euro(pig.target)
+                            :
+                            "Nessun obiettivo impostato"
+                        }
+
+                    </div>
+
+                </div>
+
+                <div class="amount">
+                    ${euro(amount)}
+                </div>
+
+            </div>
+
+            ${
+                pig.target > 0
+                ?
+                `
+                <div class="progress">
+
+                    <div
+                        class="progress-fill"
+                        style="width:${progress}%"
+                    ></div>
+
+                </div>
+                `
+                :
+                ""
+            }
+
+            <div class="actions">
+
+                <button
+                    onclick="quickMovement('${pig.id}','plus')"
+                >
+                    ＋ Aggiungi
+                </button>
+
+                <button
+                    onclick="quickMovement('${pig.id}','minus')"
+                >
+                    − Togli
+                </button>
+
+                <button
+                    onclick="addChildPig('${pig.id}')"
+                >
+                    ＋ Sotto
+                </button>
+
+                <button
+                    onclick="deletePig('${pig.id}')"
+                >
+                    Elimina
+                </button>
+
+            </div>
+
+            ${
+                children.length > 0
+                ?
+                `
+                <div class="children">
+
+                    ${
+                        children
+                        .map(child =>
+                            renderPig(
+                                child,
+                                level + 1
+                            )
+                        )
+                        .join("")
+                    }
+
+                </div>
+                `
+                :
+                ""
+            }
+
+        </div>
+    `;
+
+    return html;
+
+}
+
+
+/* =========================================================
+   RENDER MOVIMENTI
+========================================================= */
+
+function renderTransactions(){
+
+    const container =
+        document.getElementById(
+            "transactionList"
+        );
+
+    if(data.transactions.length === 0){
+
+        container.innerHTML = `
+            <div class="empty">
+                Nessun movimento registrato.
+            </div>
+        `;
+
+        return;
+    }
+
+    const transactions =
+        [...data.transactions]
+        .reverse()
+        .slice(0,15);
+
+    container.innerHTML =
+        transactions
+        .map(transaction => {
+
+            const sign =
+                transaction.type === "plus"
+                ? "+"
+                : "−";
+
+            const className =
+                transaction.type === "plus"
+                ? "transaction-plus"
+                : "transaction-minus";
+
+            return `
+
+                <div class="transaction">
+
+                    <div class="transaction-info">
+
+                        <div class="transaction-name">
+                            ${
+                                escapeHtml(
+                                    transaction.description ||
+                                    "Movimento"
+                                )
+                            }
+                        </div>
+
+                        <div class="transaction-pig">
+                            ${
+                                escapeHtml(
+                                    getPigName(
+                                        transaction.pigId
+                                    )
+                                )
+                            }
+                        </div>
+
+                    </div>
+
+                    <div class="${className}">
+                        ${sign}
+                        ${euro(transaction.amount)}
+                    </div>
+
+                </div>
+
+            `;
+
+        })
+        .join("");
+
+}
+
+
+/* =========================================================
+   SELECT
+========================================================= */
+
+function fillSelects(){
+
+    const parentSelect =
+        document.getElementById(
+            "pigParent"
+        );
+
+    const movementSelect =
+        document.getElementById(
+            "movementPig"
+        );
+
+
+    let parentOptions =
+        `<option value="">
+            Nessun padre — principale
+        </option>`;
+
+
+    data.pigs.forEach(pig => {
+
+        parentOptions += `
+            <option value="${pig.id}">
+                ${getHierarchyPrefix(pig)}
+                ${escapeHtml(pig.name)}
+            </option>
+        `;
+
+    });
+
+
+    parentSelect.innerHTML =
+        parentOptions;
+
+
+    if(data.pigs.length === 0){
+
+        movementSelect.innerHTML =
+            `<option value="">
+                Nessun salvadanaio disponibile
+            </option>`;
+
+        return;
+    }
+
+
+    let movementOptions = "";
+
+    data.pigs.forEach(pig => {
+
+        movementOptions += `
+            <option value="${pig.id}">
+                ${getHierarchyPrefix(pig)}
+                ${escapeHtml(pig.name)}
+            </option>
+        `;
+
+    });
+
+
+    movementSelect.innerHTML =
+        movementOptions;
+
+}
+
+
+function getHierarchyPrefix(pig){
+
+    let depth = 0;
+
+    let current = pig;
+
+    while(current.parentId){
+
+        depth++;
+
+        current =
+            data.pigs.find(
+                p => p.id === current.parentId
+            );
+
+        if(!current){
+            break;
+        }
+
+    }
+
+    return "— ".repeat(depth);
+
+}
+
+
+/* =========================================================
+   ESCAPE HTML
+========================================================= */
+
+function escapeHtml(value){
+
+    return String(value ?? "")
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+
+}
+
+
+/* =========================================================
+   MODALI
+========================================================= */
+
+function closeModals(){
+
+    document
+        .querySelectorAll(".modal-bg")
+        .forEach(modal => {
+
+            modal.style.display = "none";
+
+        });
+
+}
+
+
+/* =========================================================
+   IMPOSTAZIONE CIFRA INIZIALE
+========================================================= */
+
+function openSetupModal(){
+
+    document.getElementById(
+        "initialAmount"
+    ).value =
+        data.initialAmount || "";
+
+    document.getElementById(
+        "setupModal"
+    ).style.display = "flex";
+
+}
+
+
+function saveInitialAmount(){
+
+    const value =
+        Number(
+            document.getElementById(
+                "initialAmount"
+            ).value
+        );
+
+    if(value < 0 || isNaN(value)){
+
+        alert(
+            "Inserisci una cifra valida."
+        );
+
+        return;
+    }
+
+    data.initialAmount = value;
+
+    saveData();
+
+    closeModals();
+
+}
+
+
+/* =========================================================
+   NUOVO SALVADANAIO
+========================================================= */
+
+function openPigModal(parentId = ""){
+
+    document.getElementById(
+        "pigName"
+    ).value = "";
+
+    document.getElementById(
+        "pigTarget"
+    ).value = "";
+
+    document.getElementById(
+        "pigIcon"
+    ).value = "🐷";
+
+    fillSelects();
+
+    document.getElementById(
+        "pigParent"
+    ).value = parentId;
+
+    document.getElementById(
+        "pigModal"
+    ).style.display = "flex";
+
+}
+
+
+function addChildPig(parentId){
+
+    openPigModal(parentId);
+
+}
+
+
+function savePig(){
+
+    const name =
+        document.getElementById(
+            "pigName"
+        ).value.trim();
+
+    if(!name){
+
+        alert(
+            "Inserisci il titolo del salvadanaio."
+        );
+
+        return;
+    }
+
+
+    const target =
+        Number(
+            document.getElementById(
+                "pigTarget"
+            ).value
+        ) || 0;
+
+
+    const parentId =
+        document.getElementById(
+            "pigParent"
+        ).value || null;
+
+
+    const icon =
+        document.getElementById(
+            "pigIcon"
+        ).value.trim() || "🐷";
+
+
+    const pig = {
+
+        id:createId(),
+
+        name:name,
+
+        parentId:parentId,
+
+        target:Math.max(
+            0,
+            target
+        ),
+
+        icon:icon
+
+    };
+
+
+    data.pigs.push(pig);
+
+    saveData();
+
+    closeModals();
+
+}
+
+
+/* =========================================================
+   MOVIMENTI
+========================================================= */
+
+function openMovementModal(type = "plus",pigId = ""){
+
+    currentMovementType = type;
+
+    document.getElementById(
+        "movementTitle"
+    ).textContent =
+        type === "plus"
+        ? "Aggiungi soldi"
+        : "Togli soldi";
+
+
+    document.getElementById(
+        "movementAmount"
+    ).value = "";
+
+    document.getElementById(
+        "movementDescription"
+    ).value = "";
+
+
+    fillSelects();
+
+
+    if(pigId){
+
+        document.getElementById(
+            "movementPig"
+        ).value = pigId;
+
+    }
+
+
+    document.getElementById(
+        "movementModal"
+    ).style.display = "flex";
+
+}
+
+
+function quickMovement(
+    pigId,
+    type
+){
+
+    openMovementModal(
+        type,
+        pigId
+    );
+
+}
+
+
+function saveMovement(){
+
+    const amount =
+        Math.abs(
+            Number(
+                document.getElementById(
+                    "movementAmount"
+                ).value
+            )
+        );
+
+
+    const pigId =
+        document.getElementById(
+            "movementPig"
+        ).value;
+
+
+    const description =
+        document.getElementById(
+            "movementDescription"
+        ).value.trim();
+
+
+    if(!amount || amount <= 0){
+
+        alert(
+            "Inserisci un importo valido."
+        );
+
+        return;
+    }
+
+
+    if(!pigId){
+
+        alert(
+            "Seleziona un salvadanaio."
+        );
+
+        return;
+    }
+
+
+    data.transactions.push({
+
+        id:createId(),
+
+        amount:amount,
+
+        pigId:pigId,
+
+        type:currentMovementType,
+
+        description:
+            description ||
+            (
+                currentMovementType === "plus"
+                ?
+                "Aggiunta"
+                :
+                "Uscita"
+            ),
+
+        date:new Date().toISOString()
+
+    });
+
+
+    saveData();
+
+    closeModals();
+
+}
+
+
+/* =========================================================
+   ELIMINA SALVADANAI
+========================================================= */
+
+function deletePig(id){
+
+    const ids =
+        getDescendantIds(id);
+
+
+    const pig =
+        data.pigs.find(
+            p => p.id === id
+        );
+
+
+    if(!pig){
+        return;
+    }
+
+
+    const confirmed =
+        confirm(
+            "Vuoi eliminare \"" +
+            pig.name +
+            "\" e tutti i suoi sotto-salvadanai?"
+        );
+
+
+    if(!confirmed){
+        return;
+    }
+
+
+    data.pigs =
+        data.pigs.filter(
+            p => !ids.includes(p.id)
+        );
+
+
+    data.transactions =
+        data.transactions.filter(
+            t => !ids.includes(t.pigId)
+        );
+
+
+    saveData();
+
+}
+
+
+/* =========================================================
+   AVVIO
+========================================================= */
+
+render();
+
+
+/* =========================================================
+   CHIUSURA MODALE TOCCANDO FUORI
+========================================================= */
+
+document
+    .querySelectorAll(".modal-bg")
+    .forEach(background => {
+
+        background.addEventListener(
+            "click",
+            function(event){
+
+                if(event.target === background){
+
+                    closeModals();
+
+                }
+
+            }
+        );
+
+    });
+
+</script>
+
+</body>
+</html>
