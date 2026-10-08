@@ -451,7 +451,7 @@ select:focus{
 
     <div class="modal">
 
-        <h2>Nuovo salvadanaio</h2>
+        <h2 id="pigModalTitle">Nuovo salvadanaio</h2>
 
         <label>
             Titolo
@@ -499,7 +499,11 @@ select:focus{
                 Annulla
             </button>
 
-            <button class="primary" onclick="savePig()">
+            <button
+                class="primary"
+                id="pigSaveButton"
+                onclick="savePig()"
+            >
                 Crea salvadanaio
             </button>
 
@@ -577,6 +581,8 @@ const STORAGE_KEY = "salvadanai_app_v1";
 let data = loadData();
 
 let currentMovementType = "plus";
+
+let editingPigId = null;
 
 
 /* =========================================================
@@ -920,7 +926,13 @@ function renderPig(pig,level){
                 <button
                     onclick="addChildPig('${pig.id}')"
                 >
-                    ☰ Aggiungi
+                    ☰ Sotto
+                </button>
+
+                <button
+                    onclick="editPig('${pig.id}')"
+                >
+                    Modifica
                 </button>
 
                 <button
@@ -1171,6 +1183,8 @@ function closeModals(){
 
         });
 
+    editingPigId = null;
+
 }
 
 
@@ -1220,28 +1234,92 @@ function saveInitialAmount(){
 
 
 /* =========================================================
-   NUOVO SALVADANAI0
+   NUOVO / MODIFICA SALVADANAI0
 ========================================================= */
 
-function openPigModal(parentId = ""){
+function openPigModal(parentId = "", editId = null){
 
-    document.getElementById(
-        "pigName"
-    ).value = "";
+    editingPigId = editId;
 
-    document.getElementById(
-        "pigTarget"
-    ).value = "";
+    const title =
+        document.getElementById(
+            "pigModalTitle"
+        );
 
-    document.getElementById(
-        "pigIcon"
-    ).value = "🐷";
+    const saveButton =
+        document.getElementById(
+            "pigSaveButton"
+        );
 
-    fillSelects();
 
-    document.getElementById(
-        "pigParent"
-    ).value = parentId;
+    if(editId){
+
+        const pig =
+            data.pigs.find(
+                p => p.id === editId
+            );
+
+        if(!pig){
+            return;
+        }
+
+        title.textContent =
+            "Modifica salvadanaio";
+
+        saveButton.textContent =
+            "Salva modifiche";
+
+        document.getElementById(
+            "pigName"
+        ).value =
+            pig.name;
+
+        document.getElementById(
+            "pigTarget"
+        ).value =
+            pig.target || "";
+
+        document.getElementById(
+            "pigIcon"
+        ).value =
+            pig.icon || "🐷";
+
+        fillSelects();
+
+        document.getElementById(
+            "pigParent"
+        ).value =
+            pig.parentId || "";
+
+    }else{
+
+        title.textContent =
+            "Nuovo salvadanaio";
+
+        saveButton.textContent =
+            "Crea salvadanaio";
+
+        document.getElementById(
+            "pigName"
+        ).value = "";
+
+        document.getElementById(
+            "pigTarget"
+        ).value = "";
+
+        document.getElementById(
+            "pigIcon"
+        ).value = "🐷";
+
+        fillSelects();
+
+        document.getElementById(
+            "pigParent"
+        ).value =
+            parentId;
+
+    }
+
 
     document.getElementById(
         "pigModal"
@@ -1253,6 +1331,13 @@ function openPigModal(parentId = ""){
 function addChildPig(parentId){
 
     openPigModal(parentId);
+
+}
+
+
+function editPig(id){
+
+    openPigModal("", id);
 
 }
 
@@ -1293,6 +1378,66 @@ function savePig(){
             "pigIcon"
         ).value.trim() || "🐷";
 
+
+    /* MODIFICA */
+
+    if(editingPigId){
+
+        const pig =
+            data.pigs.find(
+                p => p.id === editingPigId
+            );
+
+        if(!pig){
+            return;
+        }
+
+
+        const descendants =
+            getDescendantIds(
+                editingPigId
+            );
+
+
+        if(
+            parentId === editingPigId ||
+            (
+                parentId &&
+                descendants.includes(parentId)
+            )
+        ){
+
+            alert(
+                "Non puoi impostare questo salvadanaio o un suo sotto-salvadanaio come padre."
+            );
+
+            return;
+        }
+
+
+        pig.name = name;
+
+        pig.parentId = parentId;
+
+        pig.target =
+            Math.max(
+                0,
+                target
+            );
+
+        pig.icon = icon;
+
+        editingPigId = null;
+
+        saveData();
+
+        closeModals();
+
+        return;
+    }
+
+
+    /* CREAZIONE */
 
     const pig = {
 
