@@ -175,6 +175,21 @@ button:active{
     white-space:nowrap;
 }
 
+.edit-button{
+    width:34px;
+    height:34px;
+    flex:none;
+    padding:0;
+    border-radius:10px;
+    background:#f1f1f3;
+    box-shadow:none;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:17px;
+    color:#555;
+}
+
 .progress{
     height:7px;
     background:#eeeeee;
@@ -445,13 +460,15 @@ select:focus{
 </div>
 
 
-<!-- MODALE NUOVO SALVADANAI0 -->
+<!-- MODALE NUOVO / MODIFICA SALVADANAI0 -->
 
 <div class="modal-bg" id="pigModal">
 
     <div class="modal">
 
-        <h2 id="pigModalTitle">Nuovo salvadanaio</h2>
+        <h2 id="pigModalTitle">
+            Nuovo salvadanaio
+        </h2>
 
         <label>
             Titolo
@@ -715,7 +732,7 @@ function getDescendantIds(id){
 
 
 /* =========================================================
-   SOLDI DI UN SALVADANAIO
+   SOLDI DI UN SALVADANAI0
 ========================================================= */
 
 function getPigAmount(id){
@@ -890,6 +907,15 @@ function renderPig(pig,level){
                     ${euro(amount)}
                 </div>
 
+                <button
+                    class="edit-button"
+                    onclick="editPig('${pig.id}')"
+                    aria-label="Modifica"
+                    title="Modifica"
+                >
+                    ✎
+                </button>
+
             </div>
 
             ${
@@ -927,12 +953,6 @@ function renderPig(pig,level){
                     onclick="addChildPig('${pig.id}')"
                 >
                     ☰ Sotto
-                </button>
-
-                <button
-                    onclick="editPig('${pig.id}')"
-                >
-                    Modifica
                 </button>
 
                 <button
